@@ -1,14 +1,9 @@
 ---
-version: "3"
+version: "2"
 services:
-  signald:
-    build: "signald"
-    container_name: signald
-    volumes:
-     - /var/run/signald:/signald
   signal_bot:
     restart: unless-stopped
-    build: "bot"
+    build: "."
     container_name: signal_bot
     volumes:
       - /var/run/signald:/var/run/signald
