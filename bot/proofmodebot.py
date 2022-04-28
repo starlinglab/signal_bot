@@ -59,8 +59,6 @@ async def proofmode(ctx: ChatContext) -> None:
     }
     logging.log(logging.INFO,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 
-    await ctx.message.reply(body="👀", reaction=True)
-
     try:
         await ctx.message.mark_read()
         await ctx.message.typing_started()
