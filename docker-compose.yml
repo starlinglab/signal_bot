@@ -2,10 +2,11 @@
 version: "3"
 services:
   signald:
+    restart: unless-stopped
     build: "signald"
     container_name: signald
     volumes:
-     - /var/run/signald:/signald
+      - /var/run/signald:/signald
   signal_bot:
     restart: unless-stopped
     build: "bot"
