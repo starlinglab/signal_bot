@@ -67,10 +67,11 @@ async def proofmode(ctx: ChatContext) -> None:
             
             logging.log(logging.INFO,"found " + str(len(ctx.message.data_message.attachments)))
             for attachment in ctx.message.data_message.attachments:
-                await ctx.message.reply(body="📎", reaction=True)
                 if attachment.content_type in ["application/zip"]:
                     proofmode_process(attachment.stored_filename,meta)
-                await ctx.message.reply(body="💾", reaction=True)                
+                    await ctx.message.reply(body="💾", reaction=True)
+                else:
+                    await ctx.message.reply(body="❌", reaction=True)
                 logging.log(logging.INFO,f"{attachment.content_type} ")
         else:
                 # echo
