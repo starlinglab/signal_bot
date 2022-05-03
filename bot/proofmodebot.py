@@ -53,7 +53,7 @@ async def proofmode(ctx: ChatContext) -> None:
     meta = {
         "target": str(ctx.message.username),
         "source": str(ctx.message.source.number),
-        "source_uuid": str(ctx.message.source.uuid),
+        "sourceUUID": str(ctx.message.source.uuid),
         "timestamp": str(ctx.message.timestamp),
         "timestampServer": str(ctx.message.server_timestamp),
         "body": str(ctx.message.data_message.body),
