@@ -38,7 +38,8 @@ def proofmode_process(filepath,metadata):
     target_file_base = "/store/" + os.path.basename(filepath) 
     with open(target_file_base + ".json", 'w') as f:
         f.write(json.dumps(metadata))
-    shutil.copyfile(filepath, target_file_base + ".zip")
+    shutil.copyfile(filepath, target_file_base + ".zip.part")
+    os.rename(target_file_base + ".zip.part",target_file_base + ".zip")
 
     return ""
 
