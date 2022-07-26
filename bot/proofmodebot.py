@@ -31,15 +31,16 @@ import shutil
 
 from semaphore import Bot, ChatContext
 
+proofmode_url = "https://github.com/guardianproject/proofmode/releases/download/0.0.16-RC-1/ProofMode-0.0.16-RC-1-release.apk"
 
 
-def proofmode_process(filepath,metadata):
+def proofmode_process(filepath, metadata):
     filepath = "/var/run" + filepath
-    target_file_base = "/store/" + os.path.basename(filepath) 
-    with open(target_file_base + ".json", 'w') as f:
+    target_file_base = "/store/" + os.path.basename(filepath)
+    with open(target_file_base + ".json", "w") as f:
         f.write(json.dumps(metadata))
     shutil.copyfile(filepath, target_file_base + ".zip.part")
-    os.rename(target_file_base + ".zip.part",target_file_base + ".zip")
+    os.rename(target_file_base + ".zip.part", target_file_base + ".zip")
 
     return ""
 
@@ -47,9 +48,8 @@ def proofmode_process(filepath,metadata):
 async def proofmode(ctx: ChatContext) -> None:
     global Latest_photo
 
-    
-    logging.log(logging.INFO,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-    logging.log(logging.INFO,"data message: {}".format(ctx.message.data_message))
+    logging.log(logging.INFO, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    logging.log(logging.INFO, "data message: {}".format(ctx.message.data_message))
     meta = {
         "target": str(ctx.message.username),
         "source": str(ctx.message.source.number),
@@ -58,28 +58,42 @@ async def proofmode(ctx: ChatContext) -> None:
         "timestampServer": str(ctx.message.server_timestamp),
         "body": str(ctx.message.data_message.body),
     }
-    logging.log(logging.INFO,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+    logging.log(logging.INFO, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 
     try:
         await ctx.message.mark_read()
         await ctx.message.typing_started()
-        logging.log(logging.INFO,"Procesing " + str(len(ctx.message.data_message.attachments)) + " attachments")
+        logging.log(
+            logging.INFO,
+            "Procesing "
+            + str(len(ctx.message.data_message.attachments))
+            + " attachments",
+        )
         if len(ctx.message.data_message.attachments) > 0:
-            
-            logging.log(logging.INFO,"found " + str(len(ctx.message.data_message.attachments)))
+
+            logging.log(
+                logging.INFO, "found " + str(len(ctx.message.data_message.attachments))
+            )
             for attachment in ctx.message.data_message.attachments:
                 if attachment.content_type in ["application/zip"]:
-                    proofmode_process(attachment.stored_filename,meta)
+                    proofmode_process(attachment.stored_filename, meta)
                     await ctx.message.reply(body="💾", reaction=True)
                 else:
                     await ctx.message.reply(body="❌", reaction=True)
-                logging.log(logging.INFO,f"{attachment.content_type} ")
+                logging.log(logging.INFO, f"{attachment.content_type} ")
         else:
-                # echo
-                await ctx.message.reply(body="❓", reaction=True)        
+            if ctx.message.data_message.body.lower() == "proofmode":
+                await ctx.message.reply(body="👀", reaction=True)
+                await ctx.message.reply(
+                    body=f"Current proofmode download can be found at {proofmode_url}"
+                )
+
+            # echo
+            await ctx.message.reply(body="❓", reaction=True)
         await ctx.message.typing_stopped()
-    except  Exception:
-        logging.log(logging.INFO,traceback.format_exc())
+    except Exception:
+        logging.log(logging.INFO, traceback.format_exc())
+
 
 async def main():
     """Start the bot."""
@@ -91,5 +105,5 @@ async def main():
         await bot.start()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     anyio.run(main)
