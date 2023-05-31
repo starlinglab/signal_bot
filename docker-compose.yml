@@ -7,6 +7,8 @@ services:
     container_name: signald
     volumes:
       - /var/run/signald:/signald
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
   signal_bot:
     restart: unless-stopped
     build: "bot"
